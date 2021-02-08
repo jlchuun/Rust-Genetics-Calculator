@@ -1,14 +1,10 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+from PyQt5 import QtWidgets, uic
+from rustUI import Ui_Frame
 import sys
 
 
-def main():
-    app = QApplication(sys.argv)
-    wind = QMainWindow()
-    wind.setGeometry(200, 200, 300, 300)
-    wind.setWindowTitle("Rust Genetics Calculator")
-    wind.show()
-    sys.exit(app.exec_())
+app = QtWidgets.QApplication(sys.argv)
 
-main()
+window = uic.loadUi("rust.ui")
+window.show()
+app.exec()
