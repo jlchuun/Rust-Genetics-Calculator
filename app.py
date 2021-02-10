@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt
 import sys
+import json
 import rustUI
 
 
@@ -28,6 +29,7 @@ class App(QtWidgets.QFrame, rustUI.Ui_Frame):
         self.clearButton.clicked.connect(self.clearCrop)
         self.model = CropsModel(crops=["AGFHGAGH", "ASGFKJHDS"])
         self.cropList.setModel(self.model)
+        self.load()
 
     def addCrop(self):
         text = self.cropInput.text()
@@ -38,6 +40,7 @@ class App(QtWidgets.QFrame, rustUI.Ui_Frame):
             self.model.layoutChanged.emit()
             # Clear input
             self.cropInput.setText("")
+            self.save()
 
     def clearCrop(self):
         indexes = self.cropList.selectedIndexes()
@@ -46,6 +49,18 @@ class App(QtWidgets.QFrame, rustUI.Ui_Frame):
             del self.model.crops[index.row()]
             self.model.layoutChanged.emit()
             self.cropList.clearSelection()
+            self.save()
+
+    def load(self):
+        try:
+            with open('data.json', 'r') as f:
+                self.model.crops = json.load(f)
+        except Exception:
+            pass
+
+    def save(self):
+        with open('data.json', 'w') as f:
+            data = json.dump(self.model.crops, f)
 
 
 app = QtWidgets.QApplication(sys.argv)
