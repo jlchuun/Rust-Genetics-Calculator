@@ -24,13 +24,14 @@ class App(QtWidgets.QFrame, rustUI.Ui_Frame):
         QtWidgets.QFrame.__init__(self)
         self.setupUi(self)
         self.addCropButton.clicked.connect(self.addCrop)
+        self.cropInput.returnPressed.connect(self.addCrop)
         self.clearButton.clicked.connect(self.clearCrop)
         self.model = CropsModel(crops=["AGFHGAGH", "ASGFKJHDS"])
         self.cropList.setModel(self.model)
 
     def addCrop(self):
         text = self.cropInput.text()
-        if text: # Prevents adding empty strings
+        if text:  # Prevents adding empty strings
             # Access the cropList via model
             self.model.crops.append(text)
             # Refresh list view
@@ -45,8 +46,6 @@ class App(QtWidgets.QFrame, rustUI.Ui_Frame):
             del self.model.crops[index.row()]
             self.model.layoutChanged.emit()
             self.cropList.clearSelection()
-
-
 
 
 app = QtWidgets.QApplication(sys.argv)
