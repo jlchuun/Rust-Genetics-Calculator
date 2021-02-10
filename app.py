@@ -1,41 +1,69 @@
-import tkinter as tk
-from tkinter import scrolledtext, Frame, Entry
-from tkinter.scrolledtext import ScrolledText
-
-codeFile = open('geneticCodes.txt', 'a+')
-
-
-# Stores genetic codes
-def retrieve():
-    codeFile.write(genEntry.get() + '\n')
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtCore import Qt
+import sys
+import json
+import rustUI
 
 
-root = tk.Tk()
-root.wm_title("Rust Genetics Calculator")
-root.geometry("600x450+700+200")
+class CropsModel(QtCore.QAbstractListModel):
+    def __init__(self, *args, crops=None, **kwargs):
+        super(CropsModel, self).__init__(*args, **kwargs)
+        self.crops = crops or []
 
-# create all main containers
-topLeftFrame = Frame(root, bg="#d0d9d2", width=300, height=150)
-botLeftFrame = Frame(root, bg="#b8c2ba", width=300, height=200)
-topRightFrame = Frame(root, bg="#a0a8a2", width=300, height=80)
-botRightFrame = Frame(root, bg="#888f89", width=300, height=100)
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            text = self.crops[index.row()]
+            return text
 
-# layout the main containers
-root.grid_rowconfigure(1, weight=1)
-root.grid_columnconfigure(0, weight=1)
-root.grid_columnconfigure(1, weight=1)
+    def rowCount(self, index):
+        return len(self.crops)
 
-topLeftFrame.grid(row=0, column=0, sticky="news")
-botLeftFrame.grid(row=1, column=0, sticky="news")
-topRightFrame.grid(row=0, column=1, sticky="news")
-botRightFrame.grid(row=1, column=1, sticky="news")
 
-# top left frame input and button
-genEntry = Entry(topLeftFrame, width=30)
-submitGen = tk.Button(topLeftFrame, text='Add crop', command=retrieve, padx=10, pady=5, fg='white', bg='gray')
+# Application Gui Loader
+class App(QtWidgets.QFrame, rustUI.Ui_Frame):
+    def __init__(self):
+        QtWidgets.QFrame.__init__(self)
+        self.setupUi(self)
+        self.addCropButton.clicked.connect(self.addCrop)
+        self.cropInput.returnPressed.connect(self.addCrop)
+        self.clearButton.clicked.connect(self.clearCrop)
+        self.model = CropsModel(crops=["AGFHGAGH", "ASGFKJHDS"])
+        self.cropList.setModel(self.model)
+        self.load()
 
-genEntry.grid(row=0, column=0, padx=(30, 10), pady=(20, 10))
-submitGen.grid(row=0, column=1, padx=(0, 20), pady=(10, 0))
+    def addCrop(self):
+        text = self.cropInput.text()
+        if text:  # Prevents adding empty strings
+            # Access the cropList via model
+            self.model.crops.append(text)
+            # Refresh list view
+            self.model.layoutChanged.emit()
+            # Clear input
+            self.cropInput.setText("")
+            self.save()
 
-codeFile.close()
-root.mainloop()
+    def clearCrop(self):
+        indexes = self.cropList.selectedIndexes()
+        if indexes:
+            index = indexes[0]
+            del self.model.crops[index.row()]
+            self.model.layoutChanged.emit()
+            self.cropList.clearSelection()
+            self.save()
+
+    def load(self):
+        try:
+            with open('data.json', 'r') as f:
+                self.model.crops = json.load(f)
+        except Exception:
+            pass
+
+    def save(self):
+        with open('data.json', 'w') as f:
+            data = json.dump(self.model.crops, f)
+
+
+app = QtWidgets.QApplication(sys.argv)
+window = App()
+window.show()
+app.exec()
