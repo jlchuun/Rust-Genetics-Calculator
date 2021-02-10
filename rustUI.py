@@ -23,12 +23,12 @@ class Ui_Frame(object):
         self.cropTable.setColumnCount(0)
         self.cropTable.setRowCount(0)
         self.layoutWidget = QtWidgets.QWidget(Frame)
-        self.layoutWidget.setGeometry(QtCore.QRect(40, 50, 281, 41))
+        self.layoutWidget.setGeometry(QtCore.QRect(40, 50, 271, 41))
         self.layoutWidget.setObjectName("layoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.cropInput = QtWidgets.QTextEdit(self.layoutWidget)
+        self.cropInput = QtWidgets.QLineEdit(self.layoutWidget)
         self.cropInput.setObjectName("cropInput")
         self.horizontalLayout.addWidget(self.cropInput)
         self.addCropButton = QtWidgets.QPushButton(self.layoutWidget)
@@ -40,7 +40,7 @@ class Ui_Frame(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget1)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.cropList = QtWidgets.QListWidget(self.layoutWidget1)
+        self.cropList = QtWidgets.QListView(self.layoutWidget1)
         self.cropList.setObjectName("cropList")
         self.verticalLayout.addWidget(self.cropList)
         self.clearButton = QtWidgets.QPushButton(self.layoutWidget1)
@@ -52,7 +52,7 @@ class Ui_Frame(object):
 
     def retranslateUi(self, Frame):
         _translate = QtCore.QCoreApplication.translate
-        Frame.setWindowTitle(_translate("Frame", "Frame"))
+        Frame.setWindowTitle(_translate("Frame", "Rust Genetics Calculator"))
         self.addCropButton.setText(_translate("Frame", "Add Crop"))
         self.clearButton.setText(_translate("Frame", "Clear"))
 

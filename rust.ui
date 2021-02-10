@@ -34,13 +34,13 @@
     <rect>
      <x>40</x>
      <y>50</y>
-     <width>281</width>
-     <height>72</height>
+     <width>271</width>
+     <height>41</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTextEdit" name="cropInput"/>
+     <widget class="QLineEdit" name="cropInput"/>
     </item>
     <item>
      <widget class="QPushButton" name="addCropButton">
@@ -62,7 +62,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QListWidget" name="cropList"/>
+     <widget class="QListView" name="cropList"/>
     </item>
     <item alignment="Qt::AlignRight">
      <widget class="QPushButton" name="clearButton">
