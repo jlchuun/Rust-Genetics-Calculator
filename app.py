@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt
 import sys
 import json
+import re
 import rustUI
 
 
@@ -27,13 +28,14 @@ class App(QtWidgets.QFrame, rustUI.Ui_Frame):
         self.addCropButton.clicked.connect(self.addCrop)
         self.cropInput.returnPressed.connect(self.addCrop)
         self.clearButton.clicked.connect(self.clearCrop)
-        self.model = CropsModel(crops=["AGFHGAGH", "ASGFKJHDS"])
+        self.model = CropsModel(crops=[])
         self.cropList.setModel(self.model)
         self.load()
 
     def addCrop(self):
-        text = self.cropInput.text()
-        if text:  # Prevents adding empty strings
+        text = self.cropInput.text().upper()
+
+        if re.search("[YGHWXyghwx]{6}", text):  # Prevents adding empty strings
             # Access the cropList via model
             self.model.crops.append(text)
             # Refresh list view
@@ -41,6 +43,10 @@ class App(QtWidgets.QFrame, rustUI.Ui_Frame):
             # Clear input
             self.cropInput.setText("")
             self.save()
+        else:
+            errorDialog = QtWidgets.QErrorMessage()
+            errorDialog.showMessage("Invalid Crop")
+            errorDialog.exec()
 
     def clearCrop(self):
         indexes = self.cropList.selectedIndexes()
